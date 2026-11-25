@@ -3,6 +3,7 @@ import ollama
 from tools.open_apps import open_app
 from tools.file_search import find_files
 from tools.open_file import open_file
+from memory.memory_manager import save_memory, get_memory
 
 last_search_results = []
 
@@ -82,6 +83,30 @@ while True:
 
             print("\nAira: No matching files found.")
 
+        print()
+        continue
+
+    if user.lower().startswith("remember "):
+        content = user[9:].strip()
+        if "=" in content:
+            key, value = content.split("=", 1)
+            save_memory(key.strip(), value.strip())
+            print(f"Aira: I'll remember that {key.strip()} = {value.strip()}.")
+
+        else:
+            print(
+                "Aira: Please provide a key and value in the format 'remember key = value'."
+            )
+        print()
+        continue
+
+    if user.lower().startswith("what is "):
+        key = user[8:].strip()
+        value = get_memory(key)
+        if value:
+            print(f"Aira: {key} = {value}")
+        else:
+            print(f"Aira: I don't remember '{key}'.")
         print()
         continue
 
